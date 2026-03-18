@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Data (too large for git)
+data/
+data_preprocessed.npz
+data_f32.npz
+*.edf
+
+# Results (regenerable)
+experiment_results.pkl
+results_checkpoint.pkl
+*.png
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
