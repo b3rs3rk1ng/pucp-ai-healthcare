@@ -1,3 +1,4 @@
+"""Entrenamiento remoto en GPU via Modal."""
 import modal
 import os
 
@@ -9,32 +10,35 @@ image = modal.Image.debian_slim(python_version="3.11").pip_install(
 
 vol = modal.Volume.from_name("eeg-data", create_if_missing=True)
 
-# Step 1: Upload data to Modal Volume
+
 @app.function(volumes={"/data": vol}, timeout=600)
 def upload_data(data_bytes: bytes):
     with open("/data/data_f32.npz", "wb") as f:
         f.write(data_bytes)
     vol.commit()
-    print(f"Uploaded {len(data_bytes)/1024/1024:.0f} MB to volume")
+    print(f"Subido: {len(data_bytes)/1024/1024:.0f} MB")
 
-# Step 2: Train on GPU
+
 @app.function(gpu="T4", image=image, volumes={"/data": vol}, timeout=3600)
-def run_experiment():
-    import numpy as np, time
-    import torch, torch.nn as nn, torch.optim as optim
-    from torch.utils.data import TensorDataset, DataLoader
+def run_experiment(n_channels: int = 0):
+    import numpy as np, time, pickle
+    import torch
     from sklearn.model_selection import GroupKFold
     from sklearn.metrics import accuracy_score, cohen_kappa_score, roc_auc_score
+    import torch.nn as nn, torch.optim as optim
+    from torch.utils.data import TensorDataset, DataLoader
 
     np.random.seed(42); torch.manual_seed(42)
     DEVICE = torch.device('cuda')
     print(f"Device: {DEVICE} ({torch.cuda.get_device_name(0)})")
 
+    # Cargar data
     t0 = time.time()
     d = np.load('/data/data_f32.npz', allow_pickle=True)
     X_norm = d['X_norm']; y = d['y']; groups = d['groups']; ch_names = list(d['ch_names'])
-    print(f"Data: {X_norm.shape[0]} epochs, {len(np.unique(groups))} subjects [{time.time()-t0:.1f}s]")
+    print(f"Data: {X_norm.shape[0]} epochs, {len(np.unique(groups))} sujetos [{time.time()-t0:.1f}s]")
 
+    # EEGNet
     class EEGNet(nn.Module):
         def __init__(self, nc, nt):
             super().__init__()
@@ -75,7 +79,12 @@ def run_experiment():
             out = model(torch.tensor(Xte[:,None,:,:], dtype=torch.float32).to(DEVICE))
             probs = torch.softmax(out,1)[:,1].cpu().numpy()
             preds = out.argmax(1).cpu().numpy()
-        return accuracy_score(yte,preds), cohen_kappa_score(yte,preds), roc_auc_score(yte,probs)
+        metrics = {
+            'accuracy': accuracy_score(yte, preds),
+            'kappa': cohen_kappa_score(yte, preds),
+            'auc': roc_auc_score(yte, probs),
+        }
+        return metrics, best_st
 
     CC = {
         64: list(ch_names),
@@ -86,24 +95,32 @@ def run_experiment():
         2: ['C3','C4']
     }
 
-    # Load checkpoint if exists (survives preemption)
-    import pickle as pkl
-    ckpt_path = '/data/results_checkpoint.pkl'
+    # Checkpoint (solo restaurar si hay modelos guardados también)
+    ckpt_path = '/data/results_v2.pkl'
     try:
-        results = pkl.load(open(ckpt_path, 'rb'))
-        print(f"Checkpoint: done {list(results.keys())}")
+        results = pickle.load(open(ckpt_path, 'rb'))
+        print(f"Checkpoint v2: {list(results.keys())}")
     except:
         results = {}
 
+    saved_models = {}
+
     for n_ch, ch_list in CC.items():
-        if n_ch in results:
-            print(f"\n--- {n_ch}ch DONE (acc={np.mean(results[n_ch][0]):.3f})")
+        # Si se pidió una config específica, saltar las demás
+        if n_channels > 0 and n_ch != n_channels:
             continue
+        if n_ch in results:
+            print(f"\n--- {n_ch}ch HECHO (acc={np.mean(results[n_ch][0]):.3f})")
+            continue
+
         ch_idx = [ch_names.index(c) for c in ch_list]
         Xs = X_norm[:, ch_idx, :]
-        print(f"\n--- {n_ch} channels ---")
+        print(f"\n--- {n_ch} canales ---")
         gkf = GroupKFold(n_splits=5)
         accs, kaps, aucs = [], [], []
+        best_fold_acc = 0
+        best_fold_state = None
+
         for fold, (tri, tei) in enumerate(gkf.split(Xs, y, groups)):
             t1 = time.time()
             Xtr_f, Xte = Xs[tri], Xs[tei]
@@ -112,35 +129,78 @@ def run_experiment():
             usub = np.unique(gtr)
             vs = np.random.RandomState(fold).choice(usub, max(2, len(usub)//10), replace=False)
             vm = np.isin(gtr, vs)
-            acc, kap, auc = train_and_eval(n_ch, Xtr_f[~vm], ytr_f[~vm], Xtr_f[vm], ytr_f[vm], Xte, yte)
-            accs.append(acc); kaps.append(kap); aucs.append(auc)
-            print(f"  F{fold+1} acc={acc:.3f} kap={kap:.3f} auc={auc:.3f} [{time.time()-t1:.0f}s]")
+
+            metrics, state = train_and_eval(n_ch, Xtr_f[~vm], ytr_f[~vm], Xtr_f[vm], ytr_f[vm], Xte, yte)
+            accs.append(metrics['accuracy'])
+            kaps.append(metrics['kappa'])
+            aucs.append(metrics['auc'])
+
+            if metrics['accuracy'] > best_fold_acc:
+                best_fold_acc = metrics['accuracy']
+                best_fold_state = state
+
+            print(f"  F{fold+1} acc={metrics['accuracy']:.3f} kap={metrics['kappa']:.3f} auc={metrics['auc']:.3f} [{time.time()-t1:.0f}s]")
+
         results[n_ch] = (accs, kaps, aucs)
         print(f"  MEAN acc={np.mean(accs):.3f}")
-        # Save checkpoint after each config
-        pkl.dump(results, open(ckpt_path, 'wb'))
-        vol.commit()
-        print(f"  [checkpoint saved]")
 
-    print("\n========== FINAL RESULTS ==========")
-    print("  Ch    Acc    Std    Kap    AUC")
+        # Guardar modelo del mejor fold
+        model_path = f'/data/eegnet_{n_ch}ch.pt'
+        torch.save({
+            'state_dict': best_fold_state,
+            'n_channels': n_ch,
+            'n_times': Xs.shape[2],
+            'accuracy': best_fold_acc,
+            'channels': ch_list,
+        }, model_path)
+        print(f"  Modelo guardado: eegnet_{n_ch}ch.pt")
+
+        # Checkpoint
+        pickle.dump(results, open('/data/results_v2.pkl', 'wb'))
+        vol.commit()
+        print(f"  [checkpoint]")
+
+    # Tabla final
+    print(f"\n{'='*40}\nRESULTADOS FINALES\n{'='*40}")
+    print(f"  Ch    Acc    Std    Kap    AUC")
     for nc in sorted(results.keys(), reverse=True):
         a, k, u = results[nc]
         print(f"  {nc:>2}  {np.mean(a):.3f}  {np.std(a):.3f}  {np.mean(k):.3f}  {np.mean(u):.3f}")
 
     return results
 
+
+@app.function(volumes={"/data": vol})
+def download_model(n_ch: int) -> bytes:
+    path = f'/data/eegnet_{n_ch}ch.pt'
+    with open(path, 'rb') as f:
+        return f.read()
+
+
 @app.local_entrypoint()
-def main():
-    # Upload data if not already there
+def main(n_channels: int = 0):
     data_path = "data_f32.npz"
     if os.path.exists(data_path):
-        print(f"Uploading {data_path} to Modal Volume...")
+        print(f"Subiendo data a Modal...")
         with open(data_path, "rb") as f:
             upload_data.remote(f.read())
 
-    # Run experiment
-    results = run_experiment.remote()
+    results = run_experiment.remote(n_channels=n_channels)
+
     import pickle
     pickle.dump(results, open("experiment_results.pkl", "wb"))
-    print("\nResults saved to experiment_results.pkl")
+    print("\nResultados guardados en experiment_results.pkl")
+
+    # Descargar modelos
+    os.makedirs("models", exist_ok=True)
+    for n_ch in [64, 32, 16, 8, 4, 2]:
+        try:
+            data = download_model.remote(n_ch)
+            path = f"models/eegnet_{n_ch}ch.pt"
+            with open(path, "wb") as f:
+                f.write(data)
+            print(f"  Descargado: {path}")
+        except Exception as e:
+            print(f"  Error {n_ch}ch: {e}")
+
+    print("\nModelos guardados en models/")
