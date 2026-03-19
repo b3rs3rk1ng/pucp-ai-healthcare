@@ -5,6 +5,10 @@ Clasificación de motor imagery (imaginar mover mano izquierda vs derecha) a par
 **Curso**: AI in Healthcare — PUCP
 **Dataset**: [PhysioNet EEG Motor Movement/Imagery](https://physionet.org/content/eegmmidb/1.0.0/) (109 sujetos, 64 canales, 160 Hz)
 
+## Dataset
+
+![Dataset Overview](figures/data_overview.png)
+
 ## Resultados
 
 ![Accuracy vs Channels](figures/accuracy_vs_channels.png)
