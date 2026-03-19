@@ -5,9 +5,17 @@ Clasificación de motor imagery (imaginar mover mano izquierda vs derecha) a par
 **Curso**: AI in Healthcare — PUCP
 **Dataset**: [PhysioNet EEG Motor Movement/Imagery](https://physionet.org/content/eegmmidb/1.0.0/) (109 sujetos, 64 canales, 160 Hz)
 
-## Notebook principal
+## Resultados
 
-[`eeg_electrode_reduction.ipynb`](eeg_electrode_reduction.ipynb) — contiene el experimento completo: preprocesamiento, arquitecturas, resultados, permutation test y discusión con 10 referencias.
+![Accuracy vs Channels](figures/accuracy_vs_channels.png)
+
+![Permutation Test](figures/permutation_test.png)
+
+![Recommendations](figures/recommendations.png)
+
+## Notebook
+
+[`eeg_electrode_reduction.ipynb`](eeg_electrode_reduction.ipynb) — experimento completo: preprocesamiento, arquitecturas, resultados, permutation test y discusión con 10 referencias.
 
 ## Modelos comparados
 
@@ -19,22 +27,13 @@ Clasificación de motor imagery (imaginar mover mano izquierda vs derecha) a par
 | ATCNet | Atención + TCN | ~113K | Altaheri et al., 2022 |
 | EEG Conformer | Transformer | ~100-200K | Song et al., 2022 |
 
-## Resultados
+## Hallazgos clave
 
-```
-Canales   ATCNet   EEGNet   ShallowConv   Conformer   CSP+LDA
-   64      0.742    0.733      0.725        0.611       0.590
-   32      0.651    0.652      0.658        0.655       0.589
-   16      0.639    0.640      0.647        0.584       0.581
-    8      0.628    0.572      0.635        0.595       0.587
-    4      0.584    0.583      0.599        0.589       0.551
-    2      0.548    0.550      0.563        0.548       0.508
-```
-
-- ATCNet domina con 64 canales (74.2%)
-- ShallowConvNet domina con pocos canales (56.3% con solo C3+C4)
+- **ATCNet** domina con 64 canales (74.2%) — la atención temporal captura mejor las dinámicas con información espacial completa
+- **ShallowConvNet** domina con pocos canales (56.3% con solo C3+C4) — arquitectura simple resiste mejor la pérdida de información
+- **El modelo óptimo depende del número de electrodos** — no existe un modelo universalmente superior
+- **Límite práctico validado**: 4 canales (C3, Cz, C4, CPz) — todos los modelos pasan permutation test
 - Solo ShallowConvNet y Conformer pasan el permutation test a 2 canales
-- El límite práctico validado estadísticamente es 4 canales (C3, Cz, C4, CPz)
 
 ## Validación
 

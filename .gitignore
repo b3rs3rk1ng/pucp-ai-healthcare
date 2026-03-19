@@ -12,7 +12,6 @@ data_f32.npz
 # Results (regenerable)
 experiment_results.pkl
 results_checkpoint.pkl
-*.png
 
 # Material de clase (privado)
 material/
