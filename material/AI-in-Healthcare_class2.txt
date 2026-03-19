@@ -1,434 +1,0 @@
-   AI in
-   Healthcare
-
-PhD(c) Jenifer Kalafatovich
-Learning Outcomes
-•   Understand medical imaging modalities
-•   Explain CNN architecture intuitively
-•   Compare classification vs segmentation
-•   Evaluate models clinically
-•   Understand deployment challenges.
-Medical Imaging
-Modalities Overview
-                                       X-ray Images                             CT Scan
-
-
-•   X-ray (2D radiography)
-•   CT (Computed Tomography)
-•   MRI (Magnetic Resonance Imaging)
-•   Ultrasound
-•   Digital Pathology
-                                         MRI                                    Ultrasound image
-
-
-
-
-                                                      Digital pathology image
-Medical Imaging Workflow
-•   Order – Image request
-•   Image acquisition
-•   Image interpretation
-•   Report generation
-•   Clinical decision
-X-ray (2D radiography)
-• X-rays (ionizing radiation) are generated in an X-ray tube.
-• Rays pass through the body.
-• Different tissues absorb radiation differently (bone absorbs
-  more than soft tissue).
-• A detector captures the remaining radiation.
-• Produces a 2D projection image
-CT (Computed
-Tomography)
-• Rotating X-ray source takes multiple projections around the
-  body.
-• Detectors measure attenuation from multiple angles.
-• Computer reconstructs cross-sectional slices.
-MRI (Magnetic Resonance
-Imaging) – fMRI
-• Strong magnetic field aligns hydrogen protons.
-• Radiofrequency (RF) pulses disturb alignment.
-• Protons emit signals as they relax.
-• Signals are spatially encoded and reconstructed.
-fMRI (Functional MRI)
-• Measures BOLD signal (Blood Oxygen Level Dependent).
-• Detects changes in oxygenated vs deoxygenated blood.
-• Used to map brain activity.
-Ultrasound
-•   High-frequency sound waves emitted from a probe.
-•   Waves reflect at tissue boundaries.
-•   Reflected echoes are captured.
-•   Time-of-flight converted into image.
-Digital Pathology
-• Tissue biopsy is processed and stained.
-• Slide scanned using a high-resolution whole slide scanner.
-• Produces gigapixel digital image (Whole Slide Image -
-  WSI).
-Comparison
-     Modality     Radiation   3D         Soft Tissue   Real-Time   Functional
-
-     X-ray        Yes         No         Poor          Yes         No
-
-     CT           Yes         Yes        Moderate      Yes         No
-
-     MRI          No          Yes        Excellent     Limited     Yes (fMRI)
-
-     Ultrasound   No          Limited    Moderate      Yes         Doppler
-
-     Digital                             Cellular                  Molecular
-                  No          2D slide                 No
-     Pathology                           level                     inference
-AI Tasks in Medical Imaging -
-Image-Level Tasks
- Image classification                                                     Image segmentation
- AI Predicts a label for an image or region.
-                                                                          Delineates structures pixel-by-pixel.)
- Technical approach: CNNs (ResNet,
-                                                                          Technical approach:U-Net, 3D U-Net, nnU-
- DenseNet), 3D CNNs (for CT/MRI) , Vision
-                                                                          Net, Attention U-Net.
- Transformers (ViT)
-                                                                          Output: Binary or multi-class mask.
- Output: Labels
-
-                               Object detection                                                                    Registration
-                               Finds where abnormalities are.Technical                                             Aligns two images spatially. Techinal approach
-                               approach:: Faster R-CNN, YOLO, RetinaNet                                            :Rigid transformation, Affine transformation,
-                               Output: Bounding boxes and confidence                                               Deformable registration, Learning-based
-                               scores                                                                              registration (VoxelMorph)
-Image Classification
-•   Binary classification (disease vs no disease)
-•   Multi-class classification (Normal / Pneumonia / Tuberculosis)
-•   Multiple labels per images
-•   Example: Pneumonia detection
-
-Formally:
-                                 𝑓(𝑥) ⟶ 𝑦
-Where:
-x= medical image (X-ray, CT, MRI, etc.)
-y = label (disease class, severity grade, risk level)
-Accuracy or sensitivity
-Object Detection
-Formally:
-For an image 𝑥, the model outputs:
-                                             𝑁
-                              𝑏𝑖 , 𝑐𝑖 , 𝑝𝑖   𝑖=1
-Where:
-𝑏𝑖 = bounding box coordinates
-𝑐𝑖 = class label
-𝑝𝑖 = confidence score
-Segmentation in Healthcare
-Formally:
-                              𝑓(𝑥) ⟶ 𝑀
-Where:
-x = medical image (X-ray, CT, MRI, etc.)
-M = mask (binary or multi-class)
-
-Application
-• Pixel-level prediction
-• Tumor localization
-• Organ delineation
-• Surgical planning support
-Challenges in Medical Imaging AI
-•   Small datasets
-•   Expensive expert annotations
-•   High dimensional data (2D, 3D, 4D volumes)
-•   Severe class imbalance
-•   Domain shift across hospitals
-Data imbalance
-• Data-level methods
-  ✓ Oversampling Minority Class
-  ✓ SMOTE (Synthetic Minority Oversampling)
-  ✓ Data Augmentation
-  ✓ Undersampling Majority Class
-• Algorithm-Level Methods
-  ✓ Class-Weighted Loss
-                                          1
-                 𝑙 = 𝑤𝑐 log(𝑝)   𝑤𝑐 =
-                                      𝑓𝑟𝑒𝑐𝑢𝑒𝑛𝑐𝑦𝑐
-  ✓ Focal Loss
-                        FL = −(1 − 𝑝)𝛾 log(𝑝)
-
-  ✓ Balanced Batch Sampling
-Overfitting
-•   Too many parameters (deep CNNs)
-•   Small datasets
-•   Data leakage
-•   Hidden correlations in dataset
-    ✓ “The model learns the dataset instead of learning the disease.”
-    ✓ Model learns hospital logo instead of pathology
-    ✓ Learns scanner-specific artifacts
-    ✓ Learns text markers or image borders
-    ✓ Memorizes patient-specific features
-Domain Shift Problem
-Sources of domain shift:
-• Different scanners
-• Different imaging protocols
-• Different patient demographics
-• Different disease prevalence
-• Image resolution differences
-Why Generalization Fails in
-Healthcare
-•   Model learns scanner characteristics                  Strategies to Improve Generalization
-•   Model learns demographic distribution
-                                                     •   Multi-center datasets
-•   Model trained on one ethnicity
-                                                     •   Domain adaptation
-•   Model trained on one hospital workflow
-                                                     •   Standardization of preprocessing
-                                                     •   Patient-level splits
-    Within-Hospital and Cross-Hospital Performance   •   Continuous model monitoring
-             Internal validation → optimistic
-           Cross-hospital validation → realistic
-          Prospective validation → gold standard
-Convolutional Neural Networks
-(CNNs)
-Convolutional Neural Networks
-(CNNs)
-                        Input Layer
-                        • Input image as 3D array
-                           (Height × Width × Channels)
-                        • Example: 32 × 32 × 3 (RGB
-                           image)
-                        • Each pixel contains intensity
-                           values
-Convolutional Neural Networks
-(CNNs)
-                        Small filters (e.g., 3×3) slide
-                        over the image
-                        • Element-wise multiplication
-                           + sum + bias
-                        • Produces feature maps
-                        • Multiple filters learn different
-                           patterns
-Convolutional Neural Networks
-(CNNs)
-Convolutional Neural Networks
-(CNNs)
-Convolutional Neural Networks
-(CNNs)
-Convolutional Neural Networks
-(CNNs)
-Convolutional Neural Networks
-(CNNs)                     Common to zero pad the border
-Convolutional Neural Networks
-(CNNs)
-Convolutional Neural Networks
-(CNNs)
-
-            An activation map is a 28x28 sheet of neuron
-            outputs:
-            1. Each is connected to a small region in the
-            input
-            2. All of them share parameters
-            “5x5 filter” -> “5x5 receptive field for each neuron”
-Convolutional Neural Networks
-(CNNs)
-Convolutional Neural Networks
-(CNNs) - Pooling layer
-Convolutional Neural Networks
-(CNNs) - Pooling layer
-Convolutional Neural Networks
-(CNNs)
-ResNet [He et al., 2015]
-Transfer learning
-Instead of training from scratch:
-• Take a model pre-trained on a large
-   dataset (e.g., ImageNet)
-• Reuse its learned feature representations
-• Fine-tune it on medical images
-Common pretrained models:ResNet, VGG,
-DenseNet, EfficientNet
-Transfer learning
-Feature Extraction
-• Freeze backbone
-• Train only classifier head
-• Good for very small datasets
-Fine-Tuning
-• Unfreeze last few blocks
-• Adapt to domain shift
-• Most common approach
-Domain-Specific Pretraining
-• Instead of ImageNet:Pretrain on large medical dataset
-• Then fine-tune on specific hospital dataset
-Data augmentation
-• Geometric Transformations: rotation, horizontal, scaling
-• Intensity Transformations: Brightness changes, Contrast
-  adjustment, Gaussian noise
-• Advanced Augmentation Techniques: Elastic
-  Deformation, Mixup & CutMix, Adversarial
-  Augmentation
-• Synthetic Data Generation: GANs (Generative
-  Adversarial Networks), Diffusion Models
-CNNs for Object Detection
-
-•   Labelling of each pixel
-•   First approach sliding window
-•   Extremely slow
-•   Reusing shared features
-R-CNNs
-Selective Search :
-• Look at the image and divide it into small
-   patches (like puzzle pieces).
-• Group together similar-looking patches
-   (e.g., same color, texture, etc.).
-• Combine those groups into larger
-   rectangles that might contain objects.
-• Output ~2000 of those rectangles (region
-   proposals).
-R-CNNs
-•   Regional Proposal.
-•   Feature Extraction
-•   Classification
-•   Bounding Box Regression
-Fast R-CNNs
-                          [Input Image]
-                                ↓
-                    [Convolutional Network]
-                                ↓
-               [Feature Map] + [Region Proposals]
-                                 ↓
-                      [ROI Pooling Layer]
-                                ↓
-                    [Fully Connected Layers]
-                                ↓
-              [Softmax + Bounding Box Regressor]
-Faster R-CNNs
-YOLO (You Only Look Once)
-[Redmond et al., 2015]
-YOLO (You Only Look Once)
-[Redmond et al., 2015]
-CNNs Image segmentation
-Mask R-CNN
-Mask R-CNN is an extension of Faster R-CNN that performs:
-• Object detection
-• Bounding box regression
-• Pixel-level instance segmentation
-Procedure:
-• Backbone Network (Feature Extraction)
-• Region Proposal Network (RPN)
-U-Net model
-
-• Contrastive and expansive parts,
-• Transpose convolution
-• Skip connections
-Attention U-Net model
-Attention Gates (AGs) in the skip connections instead of
-directly concatenating encoder features
-The attention gate:
-• Receives: Encoder feature map (low-level detail),
-    Decoder feature map (context signal)
-• Computes attention coefficients (values between 0 and 1)
-• Suppresses irrelevant regions
-• Enhances important regions
-                  𝛼 = 𝜎 𝑊 𝑇 𝑅𝑒𝑙𝑢 𝑊𝑥 𝑥 + 𝑊𝑔 𝑔 + b
-x: encoder features
-g: decoder gating signal
-𝛼: attention mask
-Output:                    𝑥 ´ = 𝛼. 𝑥
-nnU-Net model ("no-new-Net")
-nnU-Net is proposed to automatically configure the
-segmentation framework itself
-Strengths
-• Fully automated
-• Very strong baseline
-• Adapts to 2D/3D
-• Handles class imbalance
-• Reproducible
-Limitations
-• Computationally heavy (3D training)
-• Requires GPU memory
-• Slow training
-• Not optimized for real-time applications
-nnU-Net model ("no-new-Net")
-Dataset Fingerprinting (Automatic Analysis)
-• Image dimensions
-• Voxel spacing (anisotropy detection)
-• Modality type (CT vs MRI)
-• Class distribution
-• Median foreground size
-• Memory feasibility for 3D training
-
-
-        Small datasets → 2D works better
-   Large volumetric datasets → 3D works better
-    Very large images → need cascaded model
-nnU-Net model ("no-new-Net")
-Preprocessing pipeline
-• Resampling
-• Intensity normalization
-• Data augmentation
-Automatic Configuration Rules
-• Resolution Strategy
-• Patch Size Selection
-• Network Depth
-Loss function
-        𝐿𝑜𝑠𝑠 = 𝐷𝑖𝑐𝑒𝐿𝑜𝑠𝑠 + 𝐶𝑟𝑜𝑠𝑠𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝐿𝑜𝑠𝑠
-
-Training
-Model selection
-nnU-Net model ("no-new-Net")
-Anomaly detection
-Identifies unusual patterns that deviate from normal
-Instead of training a model to detect specific diseases, it
-learns:
-• “What does healthy look like?”
-
-Reconstruction-Based
-• Autoencoders
-• Train on normal images:
-               𝑥→𝐸𝑛𝑐𝑜𝑑𝑒𝑟→𝐷𝑒𝑐𝑜𝑑𝑒𝑟→𝑥´
-If abnormal:∣𝑥−𝑥´∣ < large
-Autoencoder
-                                                                                                             2
-• We train the two networks by minimizing the reconstruction loss function:                 ℒ = ∑ 𝑥𝑖 − 𝑥ො𝑖
-
-• The greater the difference between the original version and the version post-decompression
-  the greater the loss.
-
-
-
-                                                            Latent Space
-                                                             Features
-                                                                 𝑍
-                                                               𝜙 𝑥
-
-
-                                Feature Discovery Network                  Second Network
-Variational Autoencoder (VAEs)
- • Generative models that learn a smooth, probabilistic latent space, allowing them not only
-   to compress and reconstruct data but also to generate entirely new, realistic samples
-GAN (Generative Adversarial
-Networks)
-• Generative Adversarial Networks use adversarial training to generate new data samples
-  through the interaction of two neural networks.
-ViT
-ViT – Multi-head attention
-                                    Split into     Multiply with
-      Input    Embed each          number of        learnable
-    Sequence                       heads and
-               word and add       heads & also     matrices to get
-                 positional     create learnable     Q, K, V
-                embedding           matrices
-
-
-                                                                                   Calculate output
-                                                                                    of each head:
-                                                                                   softmax(QKT /dk
-                                                                                          )V
-  Multihead attention allows the model
-  to jointly attend to information from
-  different representation subspaces and                           Concatenate
-  hence expands the model’s ability to
-  focus on different positions                                     the resulting
-                                                                    matrices to
-                                                                   produce O/P
-Swin Transformer – Shifted Window
-Transformer [Liu et al., 2021]
-• Uses local window-based self-attention
-• Shifts windows between layers to allow cross-window interaction
-• Builds hierarchical feature maps (like CNNs)
-Thank You
-
-
-AI's Impact on Healthcare Today
-

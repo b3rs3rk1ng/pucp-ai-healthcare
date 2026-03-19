@@ -1,352 +1,0 @@
-   AI in
-   Healthcare
-
-PhD(c) Jenifer Kalafatovich
-                      Jenifer Kalafatovich
-                                jenifer.kalafatovich@gmail.com
-✓ Experience
-  • AI/ML Researcher / Computer vision Team
-  • AI/ML Researcher / BCI Team
-  • Bioengineering Researcher and Teacher’s Assistant
-✓ Education
-  • PhD (c) in Artificial Intelligence
-  • Master in Brain and Cognitive Engineering - Korea University
-  • BSc. in Mechatronics Engineering – Pontifical Catholic University of Peru Lima, Peru
-✓ Projects
-  • Learning Spatiotemporal Graph Representations for Visual Perception using EEG Signals
-  • Prediction of Memory Retrieval Performance Using Scalp-EEG and Ear-EEG Signals
-  • Emotion-aware face-talking video generation via features aggregation
-  • Generation of emotional-aware co-speech gestures from audio
-  • Tree-of-Thought Reasoning for Text-to-Image In-Context Learning
-Learning Outcomes
-•   Understand healthcare AI ecosystem
-•   Differentiate ML vs DL
-•   Identify healthcare data types
-•   Recognize ethical & regulatory constraints
-Global Healthcare
-Challenges
-•   Aging population
-•   Clinician shortage
-•   Chronic diseases
-•   Rising Costs
-•   Hospital Overload
-Why Healthcare is
-Unique for AI
-•   Life-critical decisions
-•   Highly regulated
-•   Challenging datasets
-•   Human-AI collaborate
-•   Ethics issues
-
-
-                              Classification example
-AI Applications in
-Healthcare                  Cancer Detection                      Virtual Health Assistants
-                            AI effectively identifies tumors in   AI chatbots provide patient support
-                            medical images.                       and information.
-•   Diagnosis Support
-•   Risk Prediction
-•   Workflow Automation
-•   Personalized Medicine
-•   Remote Monitoring:
-
-
-
-
-                            Hospital Workflows
-                            AI streamlines operations and
-                            reduces wait times.
-                   Accurate Diagnoses
-Benefits of
-              01
-
-                   AI enhances diagnostic precision and speeds up
-AI in              processes.
-
-
-Healthcare    02   Improved Outcomes
-
-                   Patient care becomes more effective through
-                   personalized treatments.
-
-
-
-              03   Cost Reduction
-
-                   AI helps lower operational costs within
-                   healthcare systems.
-Healthcare Data Modalities
-Healthcare data is multimodal, each modality captures a different aspect of patient health
-• Images: X-ray, CT, MRI, ultrasound, PET
-• Signals: ECG, EEG, EMG, PPG, respiratory signals
-• Electronic Health Records (EHR): Clinical notes, Lab results, Medication history,
-  Demographics
-
-
-
-
-                                                                                             3
-Machine Learning
-Refresher
-•   Training set
-•   Validation set
-•   Test set
-•   Metrics – Accuracy, ROC, AUC, etc
-Machine Learning
-Refresher
-
-
-
-              Appropriate fitting
-Machine Learning
-Refresher
-
-
-
-
-                              Dropout technique
-    K-fold Cross-Validation
-Machine Learning
-Refresher
-Linear Discriminant Analysis (LDA)
-• Assumes a normal distribution
-• Selects a new dimension
-• Maximizes the separation between classes
-• Minimizes the variance within each class after
-   projection
-
-
-
-
-                                                   Classification using LDA
-Machine Learning
-Refresher
-Support Vector Machine (SVM)
-• Produces a hyperplane
-• Searches for the best hyperplane maximizes the margins
-• Kernel trick: Projects the data into a new dimension
-
-
-
-
-                                                           Kernel trick
-                         SVM classification
-Machine Learning
-Refresher
-Random Forest (RF)
-Combines the output of multiple decision trees to reach a single
-result.
-• Builds many decision trees
-• Trains each tree on a random subset of the data
-• Uses random subsets of features at each split
-• Combines their predictions (majority vote or average)
-
-                                                                   Random Forest diagram
-Machine Learning
-Refresher
-  Aspect                     LDA                            SVM                                  Random Forest
-  Decision Boundary          Linear                         Linear or nonlinear (via kernels)    Nonlinear
-                             Gaussian distribution, equal
-  Assumptions                                               Few distributional assumptions       No distributional assumptions
-                             covariance
-  Handles Nonlinearity       No                             Yes (kernel trick)                   Yes (tree splits)
-  Robust to Outliers         Low                            Moderate (soft margin)               High
-  Risk of Overfitting        Low (if assumptions hold)      Moderate (depends on C & kernel)     Low (ensemble reduces variance)
-                                                                                                 Moderate (feature importance
-  Interpretability           High                           Moderate (low if nonlinear kernel)
-                                                                                                 available)
-                                                                                                 Number of trees, depth, features per
-  Hyperparameters            Few                            C, kernel type, kernel parameters
-                                                                                                 split
-  Computational Cost         Low                            Medium                               Medium
-  Handles Mixed Data Types   Limited                        Limited                              Excellent
-  Feature Importance         No                             No (directly)                        Yes
-Machine Learning                                                Step 1                 Step 2
-
-
-
-Refresher
-Unsupervised learning
-Learns patterns on its own by grouping similar data points or
-finding hidden structures without any human intervention.
-                                                                Step 3                 Step 4
-K-means Clustering
-• Choose initial centroids
-• Assign points nearest centroid
-• Update centroids
-• Repeat until convergerce
-
-
-
-                                                                         K-meand clustering process
-Deep Learning
-Refresher
-Artificial Neural Network
-
-
-
-
-                            Model overview
-Deep Learning
-Refresher
-
-                         z=w⋅x+b
-                          a=f(z)
-
-
-
-
-                                   Activation functions
-
-     Artificial neuron
-Deep Learning
-Refresher
-
-
-
-
-                Backpropagation
-Deep Learning
-Refresher
-
-
-
-       Gradient descent   Local minima
-Deep Learning
-Refresher
-
-
-
-       ANN
-Evaluation Metrics
-Classification Metrics
-• Accuracy
-• Precision
-• F1 Score
-
-
-
-
-                         Confusion matrix
-Evaluation Metrics
-• Area Under Curve (AUC) and ROC Curve
-
-
-
-
-                                                             Confusion matrix
-   ROC and AUC of a hypothetical perfect model
-                                                 ROC curve
-Evaluation Metrics
-Regression Metrics
-• Mean Squared Error (MSE)
-• Root Mean Squared Error (RMSE)
-Fairness and Bias in Artificial
-Intelligence
-Bias
-• Sampling Bias
-• Algorithm Bias
-• Generative Bias
-Fairness
-• Group fairness
-• Individual Fairness
-• Counterfactual Fairness
-Fairness and Bias in Artificial
-Intelligence
-1.Data Collection and Preparation
-2.Algorithmic Design and Development
-3.Fairness-aware Learning and Training
-4.Evaluation and Validation
-5.Transparency and Explainability
-6.Monitoring and Accountability
-Challenges and Concerns
-Balancing Innovation with Ethics
-
-
-
-
-Benefits                                      Challenges
-
-AI brings enhanced efficiency and accuracy,   However, the rapid integration of AI introduces
-revolutionizing healthcare practices. These   significant data privacy and ethical concerns.
-advancements lead to innovative treatments,   Issues such as algorithm bias and job
-improving patient outcomes and operational    displacement must be addressed to ensure
-processes across the industry.                responsible use of technology.
-
-
-
-
-                                                                                                9
-Clinical Validation and
-Deployment Challenges
-    Internal validation     Integration with hospital IT
-    External validation     User interface
-    Prospective studies     Human oversight
-    Real-world monitoring   Monitoring drift
-
-
-
-
-                                                           9
-Thank You
-
-
-AI's Impact on Healthcare Today
-Project Structure Requirements
-1. Problem definition – Goal, motivation
-   ✓ What are you going to do? (ex. classify x-ray images)
-   ✓ Why?
-2. Dataset description
-3. Preprocessing pipeline
-   ✓ Follow state-of-the-art
-4. Model selection & justification
-   ✓ Why you choose a specific model?
-5. Evaluation metrics
-   ✓ Choose metrics according the problem to solved
-6. Python code with comments
-Image-Based Projects
-(Computer Vision)
-• Pneumonia Detection (Chest X-ray)
-• Brain Tumor Segmentation (MRI)
-• Diabetic Retinopathy Classification
-Pneumonia Detection Project
-• Goal: Classify X-rays (pneumonia vs normal)
-• Method: Transfer learning (ResNet/EfficientNet)
-• Metrics: Accuracy, Sensitivity, ROC-AUC
-Brain Tumor Segmentation
-Project
-• Goal: Segment tumor region in MRI
-• Method: U-Net (simplified)
-• Metric: Dice coefficient
-Diabetic Retinopathy
-Classification
-• Goal: Detect disease from retinal images
-• Method: CNN + data augmentation
-• Metrics: Sensitivity vs Specificity
-EHR / Tabular Data Projects
-• Hospital Readmission Risk Prediction
-• Sepsis Early Warning System
-• Mortality Risk Prediction
-Readmission Risk Prediction
-• Goal: Predict 30-day readmission
-• Models: Logistic Regression / Gradient Boosting
-• Metrics: ROC-AUC, PR-AUC, Calibration
-Sepsis Early Warning System
-• Goal: Predict early sepsis risk
-• Method: Time-window aggregation + ML
-• Metrics: Recall-focused evaluation
-Mortality Risk Prediction
-• Goal: Predict in-hospital mortality
-• Models: Logistic Regression vs XGBoost
-• Metrics: ROC-AUC + Calibration
-Signal-Based Projects (Time-Series)
-• Arrhythmia Detection (ECG)
-• Sleep Stage Classification (EEG)
-Sleep Stage Classification
-• Goal: Classify sleep stages from EEG
-• Method: Feature extraction + Random Forest
-• Metrics: Accuracy + Confusion Matrix
-Code example:
-• https://colab.research.google.com/drive/1T-YioDegdpavatxU-
-  OOD98sU5Y1k01BZ?usp=sharing
-
