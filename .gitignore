@@ -10,11 +10,17 @@ data_f32.npz
 *.edf
 
 # Results (regenerable)
-experiment_results.pkl
-results_checkpoint.pkl
+*.pkl
 
 # Material de clase (privado)
 material/
+
+# Infraestructura (scripts internos)
+modal_*.py
+run_experiment.py
+*_validation.py
+generate_figures.py
+step_by_step.md
 
 # OS
 .DS_Store
