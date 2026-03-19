@@ -19,9 +19,11 @@ Clasificación de motor imagery (imaginar mover mano izquierda vs derecha) a par
 
 ## Notebook
 
-[`eeg_electrode_reduction.ipynb`](eeg_electrode_reduction.ipynb) — experimento completo: preprocesamiento, arquitecturas, resultados, permutation test y discusión con 10 referencias.
+[`eeg_electrode_reduction.ipynb`](eeg_electrode_reduction.ipynb) — experimento completo: preprocesamiento, resultados, permutation test y discusión.
 
 ## Modelos comparados
+
+Modelos DL implementados via [braindecode](https://braindecode.org/). CSP+LDA via [MNE](https://mne.tools/) + scikit-learn.
 
 | Modelo | Tipo | Parámetros | Referencia |
 |--------|------|------------|------------|
