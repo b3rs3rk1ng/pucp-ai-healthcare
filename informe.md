@@ -69,7 +69,19 @@ SHAP (GradientExplainer) sobre 4 modelos reveló que **F7 y F8** (frontales late
 
 La selección anatómica tradicional (C3/C4) no es óptima. La selección data-driven post-ICA sugiere FC2, F8, Cz como los canales más informativos.
 
-## 8. Conclusiones
+## 8. Motor Execution vs Imagery
+
+Se comparó motor imagery (runs 4, 8, 12) contra movimiento real (runs 3, 7, 11) con EEGNet:
+
+|  | 64ch | 2ch (C3+C4) |
+|--|------|-------------|
+| Imagery | 0.755 | 0.539 |
+| Execution | 0.744 | 0.516 |
+| Diferencia | -0.011 | -0.023 |
+
+Motor execution no supera a imagery en evaluación cross-patient. La variabilidad entre sujetos al ejecutar movimientos reales (fuerza, velocidad) es mayor que al imaginar, donde el patrón neural es más estandarizado.
+
+## 9. Conclusiones
 
 - **ATCNet** domina con 64 canales (75.1%); **ShallowConvNet** domina con pocos canales (57.4% a 2ch)
 - El modelo óptimo depende del número de electrodos — no existe un modelo universalmente superior
