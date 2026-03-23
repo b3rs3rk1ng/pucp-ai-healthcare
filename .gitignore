@@ -31,3 +31,7 @@ CHEATSHEET.md
 # IDE
 .vscode/
 .idea/
+eeg-dataset.zip
+*.log
+perm20_all_checkpoint.pkl
+permutation_100.py
